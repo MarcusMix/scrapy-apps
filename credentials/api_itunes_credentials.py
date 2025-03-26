@@ -1,0 +1,1 @@
+API_ITUNES = "https://itunes.apple.com/rss/customerreviews/page=1/"
