@@ -2,8 +2,14 @@ import subprocess
 import os
 from datetime import datetime
 
+# Obtém o caminho base do projeto (assumindo que o script roda na raiz do repositório)
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+
+# Caminho para o log (relativo ao diretório do projeto)
 data_execucao = datetime.now().date()
-log_file = f"/home/winker/Documentos/scrapy-apps/logs/execucao_{data_execucao}.txt"
+log_dir = os.path.join(BASE_DIR, "logs")
+os.makedirs(log_dir, exist_ok=True)  # Garante que a pasta exista
+log_file = os.path.join(log_dir, f"execucao_{data_execucao}.txt")
 
 def registrar_log(mensagem):
     with open(log_file, "a") as log:
@@ -12,7 +18,7 @@ def registrar_log(mensagem):
 
 def fetch_API_itunes():
     registrar_log("Executando a função *fetch_API_itunes*")
-    data_dir = "/home/winker/Documentos/scrapy-apps/data/api_itunes"
+    data_dir = os.path.join(BASE_DIR, "data/api_itunes")
     os.chdir(data_dir)
     registrar_log(f"Diretório atual: {os.getcwd()}")
 
@@ -26,14 +32,12 @@ def fetch_API_itunes():
 
 def fetch_webscraping_google_star():
     registrar_log("Executando a função *fetch_webscraping_google_star*")
-    data_dir = "/home/winker/Documentos/scrapy-apps/data/webscraping/googlewebscraping/spiders"
+    data_dir = os.path.join(BASE_DIR, "data/webscraping/googlewebscraping/spiders")
     os.chdir(data_dir)
     registrar_log(f"Diretório atual: {os.getcwd()}")
 
-    result = subprocess.run(
-        ["scrapy", "crawl", "google_star", "-o", f"/home/winker/Documentos/scrapy-apps/archive/google_star_{data_execucao}.csv"],
-        capture_output=True, text=True
-    )
+    output_path = os.path.join(BASE_DIR, "archive", f"google_star_{data_execucao}.csv")
+    result = subprocess.run(["scrapy", "crawl", "google_star", "-o", output_path], capture_output=True, text=True)
 
     if result.returncode == 0:
         registrar_log("*fetch_webscraping_google_star* executado com sucesso!")
@@ -43,14 +47,12 @@ def fetch_webscraping_google_star():
 
 def fetch_webscraping_apple_star():
     registrar_log("Executando a função *fetch_webscraping_apple_star*")
-    data_dir = "/home/winker/Documentos/scrapy-apps/data/webscraping/googlewebscraping/spiders"
+    data_dir = os.path.join(BASE_DIR, "data/webscraping/googlewebscraping/spiders")
     os.chdir(data_dir)
     registrar_log(f"Diretório atual: {os.getcwd()}")
 
-    result = subprocess.run(
-        ["scrapy", "crawl", "apple_star", "-o", f"/home/winker/Documentos/scrapy-apps/archive/apple_star_{data_execucao}.csv"],
-        capture_output=True, text=True
-    )
+    output_path = os.path.join(BASE_DIR, "archive", f"apple_star_{data_execucao}.csv")
+    result = subprocess.run(["scrapy", "crawl", "apple_star", "-o", output_path], capture_output=True, text=True)
 
     if result.returncode == 0:
         registrar_log("*fetch_webscraping_apple_star* executado com sucesso!")
@@ -60,14 +62,12 @@ def fetch_webscraping_apple_star():
 
 def fetch_webscraping_google_rating():
     registrar_log("Executando a função *fetch_webscraping_google_rating*")
-    data_dir = "/home/winker/Documentos/scrapy-apps/data/webscraping/googlewebscraping/spiders"
+    data_dir = os.path.join(BASE_DIR, "data/webscraping/googlewebscraping/spiders")
     os.chdir(data_dir)
     registrar_log(f"Diretório atual: {os.getcwd()}")
 
-    result = subprocess.run(
-        ["scrapy", "crawl", "google_rating", "-o", f"/home/winker/Documentos/scrapy-apps/archive/google_rating_{data_execucao}.csv"],
-        capture_output=True, text=True
-    )
+    output_path = os.path.join(BASE_DIR, "archive", f"google_rating_{data_execucao}.csv")
+    result = subprocess.run(["scrapy", "crawl", "google_rating", "-o", output_path], capture_output=True, text=True)
 
     if result.returncode == 0:
         registrar_log("*fetch_webscraping_google_rating* executado com sucesso!")
@@ -93,5 +93,4 @@ def main():
         registrar_log(f"--- Execução finalizada em {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} ---\n")
 
 if __name__ == "__main__":
-    os.makedirs("/home/winker/Documentos/scrapy-apps/logs", exist_ok=True)
     main()
