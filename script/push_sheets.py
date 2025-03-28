@@ -1,21 +1,22 @@
+import os
 import pandas as pd
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import tempfile
-import os
 import json
 from datetime import datetime
 
 # Obtém a data atual para logs
 data_execucao = datetime.now().date()
 
-# Caminho para o diretório de logs
-LOG_DIR = os.path.join(os.path.dirname(__file__), '..', 'logs')
+# Caminho para o diretório atual
+BASE_DIR = os.getcwd()  # Diretório atual de execução
 
-# Cria o diretório de logs se não existir
-if not os.path.exists(LOG_DIR):
-    os.makedirs(LOG_DIR)
+# Caminho para as pastas de logs e archive
+LOG_DIR = os.path.join(BASE_DIR, 'logs')
+ARCHIVE_DIR = os.path.join(BASE_DIR, 'archive')
 
+# Caminho para o arquivo de log
 LOG_FILE = os.path.join(LOG_DIR, f'push_sheets_{data_execucao}.txt')
 
 # Carrega as credenciais do Google Sheets
@@ -40,8 +41,6 @@ def read_csv_file(file_path, sep=","):
         return None
 
 def append_to_google_sheets(file_path, spreadsheet_name, worksheet_name):
-
-
     """Adiciona os dados do CSV ao Google Sheets."""
     if file_path is None:
         return
@@ -71,12 +70,12 @@ def etl_data():
     """Executa todo o processo de ETL na sequência correta."""
     log_message("🔄 Iniciando ETL...")
     
-    # Usando caminhos relativos para os arquivos
+    # Usando caminhos relativos para os arquivos na pasta 'archive'
     arquivos = {
-        "apple_comments": (os.path.join(os.path.dirname(__file__), '..', 'archive', f"comentarios_{data_execucao}.csv"), ";"),
-        "google_rating": (os.path.join(os.path.dirname(__file__), '..', 'archive', f"google_rating_{data_execucao}.csv"), ","),
-        "google_star": (os.path.join(os.path.dirname(__file__), '..', 'archive', f"google_star_{data_execucao}.csv"), ","),
-        "apple_star": (os.path.join(os.path.dirname(__file__), '..', 'archive', f"apple_star_{data_execucao}.csv"), ","),
+        "apple_comments": (os.path.join(ARCHIVE_DIR, f"comentarios_{data_execucao}.csv"), ";"),
+        "google_rating": (os.path.join(ARCHIVE_DIR, f"google_rating_{data_execucao}.csv"), ","),
+        "google_star": (os.path.join(ARCHIVE_DIR, f"google_star_{data_execucao}.csv"), ","),
+        "apple_star": (os.path.join(ARCHIVE_DIR, f"apple_star_{data_execucao}.csv"), ","),
     }
     
     arquivos_processados = {k: read_csv_file(v[0], sep=v[1]) for k, v in arquivos.items()}
