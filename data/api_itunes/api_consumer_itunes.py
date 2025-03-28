@@ -12,6 +12,8 @@ file_path = os.path.join(BASE_DIR, 'credentials', 'ids.json')
 
 print(f"Caminho do arquivo: {file_path}")
 
+page_n = "1"
+country = "br"
 data_execucao = datetime.now().date()
 
 # Carregando informações dos apps
