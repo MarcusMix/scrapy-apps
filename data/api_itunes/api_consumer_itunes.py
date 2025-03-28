@@ -4,18 +4,17 @@ import json
 from datetime import datetime, timedelta
 import os
 
-# Definindo o diretório base
-BASE_DIR = os.getcwd()
+# Definindo o diretório base (raiz do projeto)
+BASE_DIR = os.path.abspath(os.path.join(os.getcwd(), "..", ".."))
 
-file_path = os.path.abspath(os.path.join(BASE_DIR, "..", ".."))
-
-# Carregando informações dos apps
+# Caminho correto para o arquivo de credenciais
 file_path = os.path.join(BASE_DIR, 'credentials', 'ids.json')
 
 print(f"Caminho do arquivo: {file_path}")
 
 data_execucao = datetime.now().date()
 
+# Carregando informações dos apps
 with open(file_path, 'r') as file_id:
     data_apps = json.load(file_id)
 
