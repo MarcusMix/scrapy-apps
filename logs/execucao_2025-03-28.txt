@@ -1,0 +1,20 @@
+
+--- Execução iniciada em 2025-03-28 11:54:20 ---
+
+Executando a função *fetch_API_itunes*
+Diretório atual: /home/winker/Documentos/scrapy-apps/data/api_itunes
+*fetch_API_itunes* executado com sucesso!
+Executando a função *fetch_webscraping_google_rating*
+Diretório atual: /home/winker/Documentos/scrapy-apps/data/webscraping/googlewebscraping/spiders
+*fetch_webscraping_google_rating* executado com sucesso!
+Executando a função *fetch_webscraping_google_star*
+Diretório atual: /home/winker/Documentos/scrapy-apps/data/webscraping/googlewebscraping/spiders
+*fetch_webscraping_google_star* executado com sucesso!
+Executando a função *fetch_webscraping_apple_star*
+Diretório atual: /home/winker/Documentos/scrapy-apps/data/webscraping/googlewebscraping/spiders
+*fetch_webscraping_apple_star* executado com sucesso!
+
+Todos os processos foram executados com sucesso!
+
+--- Execução finalizada em 2025-03-28 13:29:24 ---
+
