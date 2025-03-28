@@ -1,0 +1,47 @@
+name: Scrapy Automation
+
+on:
+  schedule:
+    - cron: "0 11 * * 1" 
+    - cron: "0 13 * * 1"  
+  workflow_dispatch:  
+
+jobs:
+  run-spiders:
+    if: github.event.schedule == '0 11 * * 1'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar ambiente Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+
+      - name: Instalar dependências
+        run: |
+          pip install -r requirements.txt
+
+      - name: Rodar script que aciona os spiders.
+        run: python run_scrappers.py  
+
+  insert-data:
+    if: github.event.schedule == '0 13 * * 1'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar ambiente Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+
+      - name: Instalar dependências
+        run: |
+          pip install -r requirements.txt
+
+      - name: Rodar script que popula planilhas.
+        run: python push_sheets.py  
+
