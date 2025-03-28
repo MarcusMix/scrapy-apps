@@ -1,18 +1,17 @@
 import pandas as pd
 import requests
 import json
-import os
 from datetime import datetime, timedelta
-
-page_n = "1"
-country = "br"
-data_execucao = datetime.now().date()
+import os
 
 # Definindo o diretório base
 BASE_DIR = os.getcwd()
 
 # Carregando informações dos apps
 file_path = os.path.join(BASE_DIR, 'credentials', 'ids.json')
+
+with open(file_path, 'r') as file_id:
+    data_apps = json.load(file_id)
 
 autores = []
 datas = []
@@ -21,6 +20,7 @@ titulos = []
 comentarios = []
 app_name = []
 
+# Definindo a data limite de 7 dias atrás
 data_limite = datetime.now() - timedelta(days=7)
 
 def format_iso_date(data_comentario):
@@ -33,10 +33,14 @@ def format_iso_date(data_comentario):
         return data_comentario
     
 def format_data(data_comentario):
-    date_obj = datetime.fromisoformat(data_comentario)
-    date_only = date_obj.date()
-    datetime_with_date_only = datetime.combine(date_only, datetime.min.time())
-    return datetime_with_date_only
+    try:
+        date_obj = datetime.fromisoformat(data_comentario)
+        date_only = date_obj.date()
+        datetime_with_date_only = datetime.combine(date_only, datetime.min.time())
+        return datetime_with_date_only
+    except Exception as e:
+        print(f"Erro ao formatar a data: {e}")
+        return None
 
 
 def api():
@@ -67,8 +71,7 @@ def api():
                         if data_comentario_formatada and data_comentario_formatada > data_limite:
                             autores.append(autor)
                             datas.append(format_iso_date(data_comentario))
-                            # TESTE DE CASTING DE star PARA FLOAT
-                            stars.append(float(star))
+                            stars.append(float(star))  # Convertendo rating para float
                             titulos.append(title)
                             comentarios.append(content)
                             app_name.append(app["name"])
@@ -79,19 +82,21 @@ def api():
         else:
             print(f"Erro na requisição para o app {app['name']}: {response.status_code}")
 
+    # Salvando os dados no arquivo CSV
+    output_path = os.path.join(BASE_DIR, 'archive', f"comentarios_{data_execucao}.csv")
     df = pd.DataFrame({
         'app_name': app_name,
         'plataforma' : 'apple',
         'user_reviewer': autores,
         'date': datas,
         'stars': stars,
-        # 'Título': titulos,
         'commentary': comentarios
     })
 
-    df.to_csv(f'/home/winker/Documentos/scrapy-apps/archive/comentarios_{data_execucao}.csv', sep=";", index=False)
+    # Exportando para CSV
+    df.to_csv(output_path, sep=";", index=False)
 
-    print(f"Processo concluído. Comentários exportados para comentarios_{data_execucao}.csv.")
+    print(f"Processo concluído. Comentários exportados para {output_path}.")
 
 
 if __name__ == "__main__":
