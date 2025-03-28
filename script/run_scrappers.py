@@ -2,8 +2,8 @@ import subprocess
 import os
 from datetime import datetime
 
-# Obtém o caminho base do repositório (assumindo que o script está na pasta 'script' dentro do repositório)
-BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+# Obtém o diretório atual onde o script está sendo executado
+BASE_DIR = os.getcwd()
 
 # Caminho para o log (relativo ao diretório do projeto)
 data_execucao = datetime.now().date()
