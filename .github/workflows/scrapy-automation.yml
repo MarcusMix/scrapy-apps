@@ -35,7 +35,9 @@
           uses: actions/setup-python@v4
           with:
             python-version: "3.12"
-  
+          env:
+            GOOGLE_SHEETS_CREDENTIALS: ${{ secrets.GOOGLE_SHEETS_CREDENTIALS }}
+
         - name: Instalar dependências
           run: pip install -r requirements.txt
 
