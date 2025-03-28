@@ -7,8 +7,14 @@ import os
 # Definindo o diretório base
 BASE_DIR = os.getcwd()
 
+file_path = os.path.abspath(os.path.join(BASE_DIR, "..", ".."))
+
 # Carregando informações dos apps
 file_path = os.path.join(BASE_DIR, 'credentials', 'ids.json')
+
+print(f"Caminho do arquivo: {file_path}")
+
+data_execucao = datetime.now().date()
 
 with open(file_path, 'r') as file_id:
     data_apps = json.load(file_id)
