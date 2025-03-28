@@ -7,7 +7,7 @@ import json
 from datetime import datetime
 
 # Obtém a data atual para logs
-data_execucao = datetime.now()
+data_execucao = datetime.now().date()
 
 # Caminho para o diretório de logs
 LOG_DIR = os.path.join(os.path.dirname(__file__), '..', 'logs')
@@ -40,6 +40,10 @@ def read_csv_file(file_path, sep=","):
         return None
 
 def append_to_google_sheets(file_path, spreadsheet_name, worksheet_name):
+
+    sheets = client.open(spreadsheet_name)
+    log_message(f"Planilhas disponíveis: {[sheet.title for sheet in sheets.worksheets()]}")
+
     """Adiciona os dados do CSV ao Google Sheets."""
     if file_path is None:
         return
