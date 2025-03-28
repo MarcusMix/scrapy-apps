@@ -69,10 +69,10 @@ def etl_data():
     
     # Usando caminhos relativos para os arquivos
     arquivos = {
-        "apple_comments": (os.path.join(os.path.dirname(__file__), '..', 'archive', f"comentarios_{data_execucao[:10]}.csv"), ";"),
-        "google_rating": (os.path.join(os.path.dirname(__file__), '..', 'archive', f"google_rating_{data_execucao[:10]}.csv"), ","),
-        "google_star": (os.path.join(os.path.dirname(__file__), '..', 'archive', f"google_star_{data_execucao[:10]}.csv"), ","),
-        "apple_star": (os.path.join(os.path.dirname(__file__), '..', 'archive', f"apple_star_{data_execucao[:10]}.csv"), ","),
+        "apple_comments": (os.path.join(os.path.dirname(__file__), '..', 'archive', f"comentarios_{data_execucao}.csv"), ";"),
+        "google_rating": (os.path.join(os.path.dirname(__file__), '..', 'archive', f"google_rating_{data_execucao}.csv"), ","),
+        "google_star": (os.path.join(os.path.dirname(__file__), '..', 'archive', f"google_star_{data_execucao}.csv"), ","),
+        "apple_star": (os.path.join(os.path.dirname(__file__), '..', 'archive', f"apple_star_{data_execucao}.csv"), ","),
     }
     
     arquivos_processados = {k: read_csv_file(v[0], sep=v[1]) for k, v in arquivos.items()}
