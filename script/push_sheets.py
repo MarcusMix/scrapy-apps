@@ -2,18 +2,18 @@ import pandas as pd
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import tempfile
-from datetime import datetime
 import os
 import json
+from datetime import datetime
 
-data_execucao = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-LOG_FILE = f'/home/winker/Documentos/scrapy-apps/logs/push_sheets_{data_execucao}.txt'
+# Obtém a data atual para logs
+data_execucao = datetime.now()
+LOG_FILE = os.path.join(os.path.dirname(__file__), 'logs', f'push_sheets_{data_execucao}.txt')
 
-# local
-#CREDENTIALS_FILE = '/home/winker/Documentos/scrapy-apps/credentials/credentials.json'
+# Carrega as credenciais do Google Sheets
+CREDENTIALS_JSON = os.getenv("GOOGLE_SHEETS_CREDENTIALS")
 
-# cloud based
-CREDENTIALS_FILE = json.loads(os.getenv("GOOGLE_SHEETS_CREDENTIALS"))
+# Função para registrar mensagens no log
 def log_message(message):
     """Registra uma mensagem no arquivo de log."""
     with open(LOG_FILE, 'a') as log:
@@ -36,8 +36,8 @@ def append_to_google_sheets(file_path, spreadsheet_name, worksheet_name):
     if file_path is None:
         return
     try:
-        scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-        creds = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_FILE, scope)
+        # Usar as credenciais do JSON
+        creds = ServiceAccountCredentials.from_json_keyfile_dict(json.loads(CREDENTIALS_JSON), ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"])
         client = gspread.authorize(creds)
         sheet = client.open(spreadsheet_name).worksheet(worksheet_name)
 
@@ -59,11 +59,12 @@ def etl_data():
     """Executa todo o processo de ETL na sequência correta."""
     log_message("🔄 Iniciando ETL...")
     
+    # Usando caminhos relativos para os arquivos
     arquivos = {
-        "apple_comments": (f"/home/winker/Documentos/scrapy-apps/archive/comentarios_{data_execucao[:10]}.csv", ";"),
-        "google_rating": (f"/home/winker/Documentos/scrapy-apps/archive/google_rating_{data_execucao[:10]}.csv", ","),
-        "google_star": (f"/home/winker/Documentos/scrapy-apps/archive/google_star_{data_execucao[:10]}.csv", ","),
-        "apple_star": (f"/home/winker/Documentos/scrapy-apps/archive/apple_star_{data_execucao[:10]}.csv", ","),
+        "apple_comments": (os.path.join(os.path.dirname(__file__), 'archive', f"comentarios_{data_execucao[:10]}.csv"), ";"),
+        "google_rating": (os.path.join(os.path.dirname(__file__), 'archive', f"google_rating_{data_execucao[:10]}.csv"), ","),
+        "google_star": (os.path.join(os.path.dirname(__file__), 'archive', f"google_star_{data_execucao[:10]}.csv"), ","),
+        "apple_star": (os.path.join(os.path.dirname(__file__), 'archive', f"apple_star_{data_execucao[:10]}.csv"), ","),
     }
     
     arquivos_processados = {k: read_csv_file(v[0], sep=v[1]) for k, v in arquivos.items()}
