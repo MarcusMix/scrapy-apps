@@ -1,15 +1,18 @@
 import pandas as pd
 import requests
 import json
+import os
 from datetime import datetime, timedelta
 
 page_n = "1"
 country = "br"
 data_execucao = datetime.now().date()
 
+# Definindo o diretório base
+BASE_DIR = os.getcwd()
+
 # Carregando informações dos apps
-with open('/home/winker/Documentos/scrapy-apps/credentials/ids.json', 'r') as file_id:
-    data_apps = json.load(file_id)
+file_path = os.path.join(BASE_DIR, 'credentials', 'ids.json')
 
 autores = []
 datas = []
