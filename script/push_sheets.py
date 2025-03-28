@@ -41,8 +41,6 @@ def read_csv_file(file_path, sep=","):
 
 def append_to_google_sheets(file_path, spreadsheet_name, worksheet_name):
 
-    sheets = client.open(spreadsheet_name)
-    log_message(f"Planilhas disponíveis: {[sheet.title for sheet in sheets.worksheets()]}")
 
     """Adiciona os dados do CSV ao Google Sheets."""
     if file_path is None:
@@ -52,6 +50,8 @@ def append_to_google_sheets(file_path, spreadsheet_name, worksheet_name):
         creds = ServiceAccountCredentials.from_json_keyfile_dict(json.loads(CREDENTIALS_JSON), ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"])
         client = gspread.authorize(creds)
         sheet = client.open(spreadsheet_name).worksheet(worksheet_name)
+        sheets = client.open(spreadsheet_name)
+        log_message(f"Planilhas disponíveis: {[sheet.title for sheet in sheets.worksheets()]}")
 
         df = pd.read_csv(file_path).fillna('')
         data = df.values.tolist()
