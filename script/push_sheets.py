@@ -8,7 +8,15 @@ from datetime import datetime
 
 # Obtém a data atual para logs
 data_execucao = datetime.now()
-LOG_FILE = os.path.join(os.path.dirname(__file__), 'logs', f'push_sheets_{data_execucao}.txt')
+
+# Caminho para o diretório de logs
+LOG_DIR = os.path.join(os.path.dirname(__file__), '..', 'logs')
+
+# Cria o diretório de logs se não existir
+if not os.path.exists(LOG_DIR):
+    os.makedirs(LOG_DIR)
+
+LOG_FILE = os.path.join(LOG_DIR, f'push_sheets_{data_execucao}.txt')
 
 # Carrega as credenciais do Google Sheets
 CREDENTIALS_JSON = os.getenv("GOOGLE_SHEETS_CREDENTIALS")
@@ -61,10 +69,10 @@ def etl_data():
     
     # Usando caminhos relativos para os arquivos
     arquivos = {
-        "apple_comments": (os.path.join(os.path.dirname(__file__), 'archive', f"comentarios_{data_execucao[:10]}.csv"), ";"),
-        "google_rating": (os.path.join(os.path.dirname(__file__), 'archive', f"google_rating_{data_execucao[:10]}.csv"), ","),
-        "google_star": (os.path.join(os.path.dirname(__file__), 'archive', f"google_star_{data_execucao[:10]}.csv"), ","),
-        "apple_star": (os.path.join(os.path.dirname(__file__), 'archive', f"apple_star_{data_execucao[:10]}.csv"), ","),
+        "apple_comments": (os.path.join(os.path.dirname(__file__), '..', 'archive', f"comentarios_{data_execucao[:10]}.csv"), ";"),
+        "google_rating": (os.path.join(os.path.dirname(__file__), '..', 'archive', f"google_rating_{data_execucao[:10]}.csv"), ","),
+        "google_star": (os.path.join(os.path.dirname(__file__), '..', 'archive', f"google_star_{data_execucao[:10]}.csv"), ","),
+        "apple_star": (os.path.join(os.path.dirname(__file__), '..', 'archive', f"apple_star_{data_execucao[:10]}.csv"), ","),
     }
     
     arquivos_processados = {k: read_csv_file(v[0], sep=v[1]) for k, v in arquivos.items()}
