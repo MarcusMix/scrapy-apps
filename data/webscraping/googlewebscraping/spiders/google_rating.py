@@ -19,7 +19,7 @@ class MySpider(scrapy.Spider):
         self.driver = web_driver()
         self.contador_erros = 0
         self.contador_sucessos = 0
-        self.data_limite = datetime.now() - timedelta(days=100)
+        self.data_limite = datetime.now() - timedelta(days=7)
     
     def parse(self, response):
         self.driver.get(response.url)
