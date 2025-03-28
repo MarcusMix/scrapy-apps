@@ -38,6 +38,9 @@
   
         - name: Instalar dependências
           run: pip install -r requirements.txt
+
+        - name: Listar arquivos do repositório
+          run: ls -R
   
         - name: Rodar script que popula planilhas
           run: python scripts/push_sheets.py    
