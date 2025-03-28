@@ -23,7 +23,7 @@
           run: pip install -r requirements.txt
   
         - name: Rodar script que aciona os spiders
-          run: python scripts/run_scrappers.py  
+          run: python script/run_scrappers.py  
   
     insert-data:
       runs-on: ubuntu-latest
@@ -43,4 +43,4 @@
           run: ls -R
   
         - name: Rodar script que popula planilhas
-          run: python scripts/push_sheets.py    
+          run: python script/push_sheets.py    
