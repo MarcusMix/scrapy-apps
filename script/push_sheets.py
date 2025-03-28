@@ -4,11 +4,16 @@ from oauth2client.service_account import ServiceAccountCredentials
 import tempfile
 from datetime import datetime
 import os
+import json
 
 data_execucao = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 LOG_FILE = f'/home/winker/Documentos/scrapy-apps/logs/push_sheets_{data_execucao}.txt'
-CREDENTIALS_FILE = '/home/winker/Documentos/scrapy-apps/credentials/credentials.json'
 
+# local
+#CREDENTIALS_FILE = '/home/winker/Documentos/scrapy-apps/credentials/credentials.json'
+
+# cloud based
+CREDENTIALS_FILE = json.loads(os.getenv("GOOGLE_SHEETS_CREDENTIALS"))
 def log_message(message):
     """Registra uma mensagem no arquivo de log."""
     with open(LOG_FILE, 'a') as log:
