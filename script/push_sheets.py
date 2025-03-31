@@ -7,16 +7,15 @@ import json
 from datetime import datetime
 
 # Obtém a data atual para logs
-data_execucao = datetime.now()
+data_execucao = datetime.now().date()
 
-# Caminho para o diretório atual
-BASE_DIR = os.getcwd()  # Diretório atual de execução
+# Caminho para o diretório base do projeto
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ARCHIVE_DIR = os.path.join(BASE_DIR, "archive")
+LOG_DIR = os.path.join(BASE_DIR, "logs")
 
-# Caminho para as pastas de logs e archive
-
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # Obtém o diretório raiz do projeto
-ARCHIVE_DIR = os.path.join(BASE_DIR, "archive") 
-LOG_DIR = os.path.join(BASE_DIR, "logs") 
+# Garante que a pasta de logs existe
+os.makedirs(LOG_DIR, exist_ok=True)
 
 # Caminho para o arquivo de log
 LOG_FILE = os.path.join(LOG_DIR, f'push_sheets_{data_execucao}.txt')
@@ -24,70 +23,92 @@ LOG_FILE = os.path.join(LOG_DIR, f'push_sheets_{data_execucao}.txt')
 # Carrega as credenciais do Google Sheets
 CREDENTIALS_JSON = os.getenv("GOOGLE_SHEETS_CREDENTIALS")
 
-# Função para registrar mensagens no log
+
+# Função para registrar mensagens no log e no terminal
 def log_message(message):
-    """Registra uma mensagem no arquivo de log."""
+    """Registra uma mensagem no arquivo de log e exibe no terminal."""
+    log_entry = f"[{data_execucao}] {message}"
+    print(log_entry)  # Exibe no terminal
     with open(LOG_FILE, 'a') as log:
-        log.write(f"[{data_execucao}] {message}\n")
+        log.write(log_entry + "\n")
+
 
 def read_csv_file(file_path, sep=","):
     """Lê um arquivo CSV e retorna um caminho temporário para processamento."""
     try:
+        print(f"📂 Verificando arquivo: {file_path}")
         df = pd.read_csv(file_path, sep=sep)
         temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".csv")
         df.to_csv(temp_file.name, index=False)
-        log_message(f"SUCESSO: Leitura do arquivo {file_path}")
+        log_message(f"✅ SUCESSO: Leitura do arquivo {file_path}")
         return temp_file.name
     except Exception as e:
-        log_message(f"ERRO: Falha ao ler o arquivo {file_path} - {str(e)}")
+        log_message(f"❌ ERRO: Falha ao ler o arquivo {file_path} - {str(e)}")
         return None
+
 
 def append_to_google_sheets(file_path, spreadsheet_name, worksheet_name):
     """Adiciona os dados do CSV ao Google Sheets."""
     if file_path is None:
+        log_message(f"⚠️ Arquivo {file_path} não encontrado. Pulando...")
         return
+
     try:
-        # Usar as credenciais do JSON
-        creds = ServiceAccountCredentials.from_json_keyfile_dict(json.loads(CREDENTIALS_JSON), ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"])
+        print(f"🔑 Tentando autenticação no Google Sheets...")
+        creds = ServiceAccountCredentials.from_json_keyfile_dict(json.loads(CREDENTIALS_JSON),
+                                                                 ["https://spreadsheets.google.com/feeds",
+                                                                  "https://www.googleapis.com/auth/drive"])
         client = gspread.authorize(creds)
         sheet = client.open(spreadsheet_name).worksheet(worksheet_name)
-        sheets = client.open(spreadsheet_name)
-        log_message(f"Planilhas disponíveis: {[sheet.title for sheet in sheets.worksheets()]}")
+
+        print(f"📊 Enviando dados para {spreadsheet_name} - {worksheet_name}")
 
         df = pd.read_csv(file_path).fillna('')
         data = df.values.tolist()
         last_row = len(sheet.col_values(1)) + 1
+
+        if not data:
+            log_message(f"⚠️ Nenhum dado encontrado em {file_path}. Pulando...")
+            return
+
         chunk_size = max(1, len(data) // 5)
-        chunks = [data[i:i+chunk_size] for i in range(0, len(data), chunk_size)]
+        chunks = [data[i:i + chunk_size] for i in range(0, len(data), chunk_size)]
 
         for chunk in chunks:
             sheet.append_rows(chunk, value_input_option="RAW", table_range=f"A{last_row}")
             last_row += len(chunk)
-        
-        log_message(f"SUCESSO: Dados de {file_path} enviados para {spreadsheet_name} - {worksheet_name}")
+
+        log_message(f"✅ SUCESSO: Dados de {file_path} enviados para {spreadsheet_name} - {worksheet_name}")
+
     except Exception as e:
-        log_message(f"ERRO: Falha ao enviar dados de {file_path} para {spreadsheet_name} - {worksheet_name} - {str(e)}")
+        log_message(f"❌ ERRO: Falha ao enviar dados de {file_path} para {spreadsheet_name} - {worksheet_name} - {str(e)}")
+
 
 def etl_data():
     """Executa todo o processo de ETL na sequência correta."""
     log_message("🔄 Iniciando ETL...")
     
+    # Listando arquivos no diretório archive
+    print(f"📂 Listando arquivos no diretório: {ARCHIVE_DIR}")
+    print(f"📃 Arquivos encontrados: {os.listdir(ARCHIVE_DIR)}")
+
     # Usando caminhos relativos para os arquivos na pasta 'archive'
     arquivos = {
-        "apple_comments": (os.path.join(ARCHIVE_DIR, f"comentarios_{data_execucao}.csv"), ";"),
-        "google_rating": (os.path.join(ARCHIVE_DIR, f"google_rating_{data_execucao}.csv"), ","),
-        "google_star": (os.path.join(ARCHIVE_DIR, f"google_star_{data_execucao}.csv"), ","),
-        "apple_star": (os.path.join(ARCHIVE_DIR, f"apple_star_{data_execucao}.csv"), ","),
+        "apple_comments": (os.path.join(ARCHIVE_DIR, "comentarios.csv"), ";"),
+        "google_rating": (os.path.join(ARCHIVE_DIR, "google_rating.csv"), ","),
+        "google_star": (os.path.join(ARCHIVE_DIR, "google_star.csv"), ","),
+        "apple_star": (os.path.join(ARCHIVE_DIR, "apple_star.csv"), ","),
     }
-    
+
     arquivos_processados = {k: read_csv_file(v[0], sep=v[1]) for k, v in arquivos.items()}
-    
+
     append_to_google_sheets(arquivos_processados["apple_comments"], "comentarios_apple_google", "apple")
     append_to_google_sheets(arquivos_processados["google_rating"], "comentarios_apple_google", "google")
     append_to_google_sheets(arquivos_processados["google_star"], "notas_downloads_apple_google", "google")
     append_to_google_sheets(arquivos_processados["apple_star"], "notas_downloads_apple_google", "apple")
-    
+
     log_message("✅ ETL concluído!")
+
 
 if __name__ == "__main__":
     etl_data()
