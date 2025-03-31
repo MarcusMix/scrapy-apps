@@ -94,10 +94,10 @@ def etl_data():
 
     # Usando caminhos relativos para os arquivos na pasta 'archive'
     arquivos = {
-        "apple_comments": (os.path.join(ARCHIVE_DIR, "comentarios.csv"), ";"),
-        "google_rating": (os.path.join(ARCHIVE_DIR, "google_rating.csv"), ","),
-        "google_star": (os.path.join(ARCHIVE_DIR, "google_star.csv"), ","),
-        "apple_star": (os.path.join(ARCHIVE_DIR, "apple_star.csv"), ","),
+        "apple_comments": (os.path.join(ARCHIVE_DIR, f"comentarios_{data_execucao}.csv"), ";"),
+        "google_rating": (os.path.join(ARCHIVE_DIR, f"google_rating_{data_execucao}.csv"), ","),
+        "google_star": (os.path.join(ARCHIVE_DIR, f"google_star_{data_execucao}.csv"), ","),
+        "apple_star": (os.path.join(ARCHIVE_DIR, f"apple_star_{data_execucao}.csv"), ","),
     }
 
     arquivos_processados = {k: read_csv_file(v[0], sep=v[1]) for k, v in arquivos.items()}
