@@ -91,6 +91,9 @@ def api():
 
     # Salvando os dados no arquivo CSV
     output_path = os.path.join(BASE_DIR, 'archive', f"comentarios_{data_execucao}.csv")
+
+    # Criando o diretório se não existir
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
     df = pd.DataFrame({
         'app_name': app_name,
         'plataforma' : 'apple',
