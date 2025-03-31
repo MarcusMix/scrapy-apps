@@ -22,7 +22,7 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Rodar script que aciona os spiders
-        run: python run_scrappers.py  
+        run: python script/run_scrappers.py  
 
       - name: Salvar arquivos gerados
         uses: actions/upload-artifact@v4
@@ -52,4 +52,4 @@ jobs:
           path: archive/  # Baixa os arquivos na pasta correta
 
       - name: Rodar script que popula planilhas
-        run: python push_sheets.py  
+        run: python script/push_sheets.py  
