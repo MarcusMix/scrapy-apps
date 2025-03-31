@@ -21,8 +21,8 @@ os.makedirs(LOG_DIR, exist_ok=True)
 LOG_FILE = os.path.join(LOG_DIR, f'push_sheets_{data_execucao}.txt')
 
 # Carrega as credenciais do Google Sheets
-CREDENTIALS_JSON = os.getenv("GOOGLE_SHEETS_CREDENTIALS")
-
+CREDENTIALS_JSON = os.getenv("GOOGLE_SHEETS_CREDENTIALS1")
+print("Credencial do google " + CREDENTIALS_JSON)
 
 # Função para registrar mensagens no log e no terminal
 def log_message(message):
