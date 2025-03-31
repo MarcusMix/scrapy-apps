@@ -13,8 +13,10 @@ data_execucao = datetime.now().date()
 BASE_DIR = os.getcwd()  # Diretório atual de execução
 
 # Caminho para as pastas de logs e archive
-LOG_DIR = os.path.join(BASE_DIR, 'logs')
-ARCHIVE_DIR = os.path.join(BASE_DIR, 'archive')
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # Obtém o diretório raiz do projeto
+ARCHIVE_DIR = os.path.join(BASE_DIR, "archive") 
+LOG_DIR = os.path.join(BASE_DIR, "logs") 
 
 # Caminho para o arquivo de log
 LOG_FILE = os.path.join(LOG_DIR, f'push_sheets_{data_execucao}.txt')
