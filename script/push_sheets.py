@@ -7,7 +7,7 @@ import json
 from datetime import datetime
 
 # Obtém a data atual para logs
-data_execucao = datetime.now().date()
+data_execucao = datetime.now()
 
 # Caminho para o diretório atual
 BASE_DIR = os.getcwd()  # Diretório atual de execução
