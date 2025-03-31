@@ -29,6 +29,8 @@ jobs:
         with:
           name: scraped-data
           path: archive/*.csv  # Salva todos os arquivos CSV gerados
+      - name: Listar arquivos antes do upload
+        run: ls -l archive/
 
   insert-data:
     runs-on: ubuntu-latest
@@ -50,6 +52,9 @@ jobs:
         with:
           name: scraped-data
           path: archive/  # Baixa os arquivos na pasta correta
+      
+      - name: Listar arquivos antes do upload
+        run: ls -l archive/
 
       - name: Rodar script que popula planilhas
         run: python script/push_sheets.py  
