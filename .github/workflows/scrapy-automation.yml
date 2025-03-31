@@ -51,10 +51,13 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: scraped-data
-          path: archive/  # Baixa os arquivos na pasta correta
+          path: archive/  
       
       - name: Listar arquivos antes do upload
-        run: ls -l archive/
+        run: ls -l archive/ 
+
+      - name: Cat nos arquivos antes do upload
+        run: cat archive/*.csv
 
       - name: Rodar script que popula planilhas
         run: python script/push_sheets.py  
