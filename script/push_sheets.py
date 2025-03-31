@@ -6,8 +6,8 @@ import tempfile
 import json
 from datetime import datetime
 
-# Obtém a data atual para logs
-data_execucao = datetime.now().date()
+# Obtém a data atual formatada
+data_execucao = datetime.now().strftime("%Y-%m-%d")
 
 # Caminho para o diretório base do projeto
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -37,9 +37,22 @@ def read_csv_file(file_path, sep=","):
     """Lê um arquivo CSV e retorna um caminho temporário para processamento."""
     try:
         print(f"📂 Verificando arquivo: {file_path}")
+
+        # Verifica se o arquivo está vazio antes de abrir
+        if os.path.getsize(file_path) == 0:
+            log_message(f"⚠️ Arquivo {file_path} está vazio. Pulando...")
+            return None
+
         df = pd.read_csv(file_path, sep=sep)
+
+        # Verifica se tem colunas válidas
+        if df.empty or df.columns.size == 0:
+            log_message(f"⚠️ Arquivo {file_path} não contém colunas válidas. Pulando...")
+            return None
+
         temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".csv")
         df.to_csv(temp_file.name, index=False)
+
         log_message(f"✅ SUCESSO: Leitura do arquivo {file_path}")
         return temp_file.name
     except Exception as e:
@@ -50,7 +63,12 @@ def read_csv_file(file_path, sep=","):
 def append_to_google_sheets(file_path, spreadsheet_name, worksheet_name):
     """Adiciona os dados do CSV ao Google Sheets."""
     if file_path is None:
-        log_message(f"⚠️ Arquivo {file_path} não encontrado. Pulando...")
+        log_message(f"⚠️ Arquivo não encontrado. Pulando {worksheet_name}...")
+        return
+
+    # Verifica se as credenciais estão definidas corretamente
+    if not CREDENTIALS_JSON:
+        log_message("❌ ERRO: Variável de ambiente GOOGLE_SHEETS_CREDENTIALS não está definida!")
         return
 
     try:
@@ -92,7 +110,7 @@ def etl_data():
     print(f"📂 Listando arquivos no diretório: {ARCHIVE_DIR}")
     print(f"📃 Arquivos encontrados: {os.listdir(ARCHIVE_DIR)}")
 
-    # Usando caminhos relativos para os arquivos na pasta 'archive'
+    # Usando caminhos com data_execucao nos nomes dos arquivos
     arquivos = {
         "apple_comments": (os.path.join(ARCHIVE_DIR, f"comentarios_{data_execucao}.csv"), ";"),
         "google_rating": (os.path.join(ARCHIVE_DIR, f"google_rating_{data_execucao}.csv"), ","),
