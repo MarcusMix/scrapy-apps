@@ -7,7 +7,7 @@ import json
 from datetime import datetime
 
 # Obtém a data atual formatada
-data_execucao = datetime.now().strftime("%Y-%m-%d")
+data_execucao = datetime.now().date()
 
 # Caminho para o diretório base do projeto
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -22,7 +22,7 @@ LOG_FILE = os.path.join(LOG_DIR, f'push_sheets_{data_execucao}.txt')
 
 # Carrega as credenciais do Google Sheets
 CREDENTIALS_JSON = os.getenv("GOOGLE_SHEETS_CREDENTIALS1")
-print("Credencial do google " + CREDENTIALS_JSON)
+print(f"Credencial do google {CREDENTIALS_JSON}")
 
 # Função para registrar mensagens no log e no terminal
 def log_message(message):
