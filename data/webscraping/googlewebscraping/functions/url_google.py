@@ -170,7 +170,12 @@ def all_url_google():
         'https://play.google.com/store/apps/details?id=br.com.winker.wl.umuarama&hl=pt&gl=br',
         'https://play.google.com/store/apps/details?id=br.com.winker.wl.lowndes&hl=pt&gl=br',
         'https://play.google.com/store/apps/details?id=br.com.winker.wl.versari&hl=pt&gl=br',
-        'https://play.google.com/store/apps/details?id=br.com.winker.wl.m10&hl=pt&gl=br'
+        'https://play.google.com/store/apps/details?id=br.com.winker.wl.m10&hl=pt&gl=br',
+        'https://play.google.com/store/apps/details?id=br.com.winker.wl.cattoni',
+        'https://play.google.com/store/apps/details?id=br.com.winker.wl.napolescondominios',
+        'https://play.google.com/store/apps/details?id=br.com.winker.wl.graber',
+        'https://play.google.com/store/apps/details?id=br.com.winker.wl.omni',
+        'https://play.google.com/store/apps/details?id=br.com.winker.wl.panorama',
     ]
 
     return urls

@@ -18,7 +18,7 @@ titulos = []
 comentarios = []
 app_name = []
 
-data_limite = datetime.now() - timedelta(days=7)
+data_limite = datetime.now() - timedelta(days=14)
 
 def format_iso_date(data_comentario):
     try:

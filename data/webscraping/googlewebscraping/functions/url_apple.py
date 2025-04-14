@@ -160,5 +160,12 @@ def all_url_apple():
         'https://apps.apple.com/br/app/winker/id6738356966',
         'https://apps.apple.com/br/app/winker/id6739291756',
         'https://apps.apple.com/br/app/winker/id6740006008',
+        'https://apps.apple.com/br/app/robotton-line/id1431781080',
+        'https://apps.apple.com/us/app/a-panorama/id6743945906',
+        'https://apps.apple.com/us/app/cattoni-condom%C3%ADnios/id1266365573',
+        'https://apps.apple.com/us/app/n%C3%A1poles-condom%C3%ADnios/id6743721294',
+        'https://apps.apple.com/us/app/graber-smart-access/id1624969418',
+        'https://apps.apple.com/us/app/aadk-administradora/id6466106417',
+        'https://apps.apple.com/us/app/omni-seguran%C3%A7a/id6744251640',
     ]
     return urls
